@@ -1,16 +1,17 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/tyspice/mr-grocery-sql/models"
 )
 
-var db = make(map[string]string)
-
 func setupRouter() *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
+	fmt.Println("Starting Server")
 	r := gin.Default()
 
 	// Ping test
@@ -18,57 +19,32 @@ func setupRouter() *gin.Engine {
 		c.String(http.StatusOK, "pong")
 	})
 
-	// Get user value
-	r.GET("/user/:name", func(c *gin.Context) {
-		user := c.Params.ByName("name")
-		value, ok := db[user]
-		if ok {
-			c.JSON(http.StatusOK, gin.H{"user": user, "value": value})
+	r.GET("/people", func(c *gin.Context) {
+		people, err := models.GetPeople()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Woops!")
 		} else {
-			c.JSON(http.StatusOK, gin.H{"user": user, "status": "no value"})
+			c.JSON(http.StatusOK, people)
 		}
 	})
-
-	// Authorized group (uses gin.BasicAuth() middleware)
-	// Same than:
-	// authorized := r.Group("/")
-	// authorized.Use(gin.BasicAuth(gin.Credentials{
-	//	  "foo":  "bar",
-	//	  "manu": "123",
-	//}))
-	authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
-		"foo":  "bar", // user:foo password:bar
-		"manu": "123", // user:manu password:123
-	}))
-
-	/* example curl for /admin with basicauth header
-	   Zm9vOmJhcg== is base64("foo:bar")
-
-		curl -X POST \
-	  	http://localhost:8080/admin \
-	  	-H 'authorization: Basic Zm9vOmJhcg==' \
-	  	-H 'content-type: application/json' \
-	  	-d '{"value":"bar"}'
-	*/
-	authorized.POST("admin", func(c *gin.Context) {
-		user := c.MustGet(gin.AuthUserKey).(string)
-
-		// Parse JSON
-		var json struct {
-			Value string `json:"value" binding:"required"`
-		}
-
-		if c.Bind(&json) == nil {
-			db[user] = json.Value
-			c.JSON(http.StatusOK, gin.H{"status": "ok"})
-		}
-	})
-
 	return r
 }
 
 func main() {
+	var userName string
+	var password string
+	flag.StringVar(&userName, "u", "root", "user name")
+	flag.StringVar(&password, "p", "password", "password")
+	flag.Parse()
+
+	err := models.InitDB(userName, password)
+	if err != nil {
+		panic(err)
+	}
+
+	defer models.Finished()
+
 	r := setupRouter()
-	// Listen and Server in 0.0.0.0:8080
-	r.Run(":8080")
+	port := ":8080"
+	r.Run(port)
 }
