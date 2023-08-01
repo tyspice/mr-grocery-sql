@@ -1,14 +1,50 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/tyspice/mr-grocery-sql/models"
+	"gopkg.in/yaml.v2"
 )
+
+type Config struct {
+	Server struct {
+		Port string `yaml:"port", envconfig:"SERVER_PORT"`
+	} `yaml:"server"`
+	Database struct {
+		Username string `yaml:"username", envconfig:"DB_USERNAME"`
+		Password string `yaml:"password" envconfig:"DB_PASSWORD", `
+	} `yaml:"database"`
+}
+
+func initConfig() Config {
+	var cfg Config
+	f, err := os.Open("local.yaml")
+	if err == nil {
+		decoder := yaml.NewDecoder(f)
+		err = decoder.Decode(&cfg)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		// We assume that the error was caused by a missing
+		// local file which isn't fatal because it most likely means
+		// we'll fall back to an env variable
+		log.Println(err.Error())
+	}
+	f.Close()
+
+	err = envconfig.Process("", &cfg)
+	if err != nil {
+		panic(err)
+	}
+	return cfg
+}
 
 func setupRouter() *gin.Engine {
 	fmt.Println("Starting Server")
@@ -31,20 +67,13 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
-	var userName string
-	var password string
-	flag.StringVar(&userName, "u", "root", "user name")
-	flag.StringVar(&password, "p", "password", "password")
-	flag.Parse()
-
-	err := models.InitDB(userName, password)
+	config := initConfig()
+	err := models.InitDB(config.Database.Username, config.Database.Password)
 	if err != nil {
 		panic(err)
 	}
-
 	defer models.Finished()
 
 	r := setupRouter()
-	port := ":8080"
-	r.Run(port)
+	r.Run(":" + config.Server.Port)
 }
