@@ -14,11 +14,11 @@ import (
 
 type Config struct {
 	Server struct {
-		Port string `yaml:"port", envconfig:"SERVER_PORT"`
+		Port string `yaml:"port" envconfig:"SERVER_PORT"`
 	} `yaml:"server"`
 	Database struct {
-		Username string `yaml:"username", envconfig:"DB_USERNAME"`
-		Password string `yaml:"password" envconfig:"DB_PASSWORD", `
+		Username string `yaml:"username" envconfig:"DB_USERNAME"`
+		Password string `yaml:"password" envconfig:"DB_PASSWORD"`
 	} `yaml:"database"`
 }
 
