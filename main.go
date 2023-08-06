@@ -19,6 +19,8 @@ type Config struct {
 	Database struct {
 		Username string `yaml:"username" envconfig:"DB_USERNAME"`
 		Password string `yaml:"password" envconfig:"DB_PASSWORD"`
+		Host string `yaml:"host" envconfig:"DB_HOST"`
+		Port string `yaml:"port" envconfig:"DB_PORT"`
 	} `yaml:"database"`
 }
 
@@ -68,9 +70,11 @@ func setupRouter() *gin.Engine {
 
 func main() {
 	config := initConfig()
-	err := models.InitDB(config.Database.Username, config.Database.Password)
+	err := models.InitDB(config.Database.Username, config.Database.Password, config.Database.Host, config.Database.Port)
 	if err != nil {
 		panic(err)
+	} else {
+		fmt.Println("DB successfully initialized")
 	}
 	defer models.Finished()
 

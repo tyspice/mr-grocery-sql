@@ -3,22 +3,27 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var db *sql.DB
 
-func InitDB(userName string, password string) error {
+func InitDB(userName string, password string, host string, port string) error {
 	fmt.Println("Initializing DB")
-	connectionString := userName + ":" + password + "@tcp(127.0.0.1:3306)/my_thing"
+	connectionString := userName + ":" + password + "@tcp(" + host + ":" + port + ")/my_thing?timeout=10s"
 	var err error
-	db, err = sql.Open("mysql", connectionString)
-
-	if err != nil {
-		return err
+	db, _ = sql.Open("mysql", connectionString)
+	retryCount := 0
+	for retryCount <= 5 {
+		err = db.Ping()
+		if err != nil {
+			fmt.Println("DB not initialized, waiting and retrying")
+			time.Sleep(3 * time.Second)
+		}
+		retryCount++
 	}
-	fmt.Println("DB successfully initialized")
 	return db.Ping()
 }
 
