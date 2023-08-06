@@ -1,18 +1,5 @@
 services:
 
-  db:
-    image: mysql
-    networks:
-      - mr-grocery
-    command: --default-authentication-plugin=mysql_native_password
-    volumes:
-      - "~/Desktop/testDB:/var/lib/mysql"
-    env_file:
-      - local.env
-    environment:
-      MYSQL_ROOT_PASSWORD: "example"
-
-
   mrGrocery:
     image: mr-grocery-sql:0.0.3
     networks:
