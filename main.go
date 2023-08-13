@@ -19,8 +19,8 @@ type Config struct {
 	Database struct {
 		Username string `yaml:"username" envconfig:"DB_USERNAME"`
 		Password string `yaml:"password" envconfig:"DB_PASSWORD"`
-		Host string `yaml:"host" envconfig:"DB_HOST"`
-		Port string `yaml:"port" envconfig:"DB_PORT"`
+		Host     string `yaml:"host" envconfig:"DB_HOST"`
+		Port     string `yaml:"port" envconfig:"DB_PORT"`
 	} `yaml:"database"`
 }
 
@@ -57,14 +57,24 @@ func setupRouter() *gin.Engine {
 		c.String(http.StatusOK, "pong")
 	})
 
-	r.GET("/people", func(c *gin.Context) {
-		people, err := models.GetPeople()
+	r.GET("/users", func(c *gin.Context) {
+		users, err := models.GetUsers()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, "Woops!")
 		} else {
-			c.JSON(http.StatusOK, people)
+			c.JSON(http.StatusOK, users)
 		}
 	})
+
+	r.GET("/items", func(c *gin.Context) {
+		items, err := models.GetItems()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, "Woops!")
+		} else {
+			c.JSON(http.StatusOK, items)
+		}
+	})
+
 	return r
 }
 
