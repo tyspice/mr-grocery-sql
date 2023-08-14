@@ -25,7 +25,7 @@ type Item struct {
 }
 
 func InsertItem(item *Item) (sql.Result, error) {
-	result, err := db.Exec("INSERT INTO items (item, category, notes, status, updated) VALUES (?, ?, ?, ?, ?)", item.Item, item.Category, item.Notes, item.Status, item.Updated)
+	result, err := db.Exec("INSERT INTO items (item, category, notes, status) VALUES (?, ?, ?, ?)", item.Item, item.Category, item.Notes, item.Status)
 	return result, err
 }
 
