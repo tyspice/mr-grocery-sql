@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/tyspice/mr-grocery-sql/models"
+	"github.com/tyspice/mr-grocery-sql/router"
 	"gopkg.in/yaml.v2"
 )
 
@@ -48,36 +47,6 @@ func initConfig() Config {
 	return cfg
 }
 
-func setupRouter() *gin.Engine {
-	fmt.Println("Starting Server")
-	r := gin.Default()
-
-	// Ping test
-	r.GET("/ping", func(c *gin.Context) {
-		c.String(http.StatusOK, "pong")
-	})
-
-	r.GET("/users", func(c *gin.Context) {
-		users, err := models.GetUsers()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Woops!")
-		} else {
-			c.JSON(http.StatusOK, users)
-		}
-	})
-
-	r.GET("/items", func(c *gin.Context) {
-		items, err := models.GetItems()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Woops!")
-		} else {
-			c.JSON(http.StatusOK, items)
-		}
-	})
-
-	return r
-}
-
 func main() {
 	config := initConfig()
 	err := models.InitDB(config.Database.Username, config.Database.Password, config.Database.Host, config.Database.Port)
@@ -88,6 +57,6 @@ func main() {
 	}
 	defer models.Finished()
 
-	r := setupRouter()
+	r := router.InitRouter()
 	r.Run(":" + config.Server.Port)
 }

@@ -32,7 +32,7 @@ func InitDB(userName string, password string, host string, port string) error {
 }
 
 func InitTables() {
-	_, err := db.Exec("CREATE TABLE IF NOT EXISTS items (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, items TEXT NULL, category VARCHAR(255) NULL, notes VARCHAR(255) NULL, status ENUM('nonce', 'out', 'low', 'adequate', 'stocked') NULL, updated DATETIME NULL)")
+	_, err := db.Exec("CREATE TABLE IF NOT EXISTS items (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, item TEXT NULL, category VARCHAR(255) NULL, notes VARCHAR(255) NULL, status ENUM('nonce', 'out', 'low', 'adequate', 'stocked') NULL, updated DATETIME NULL)")
 
 	if err != nil {
 		panic(err)
@@ -48,64 +48,4 @@ func InitTables() {
 func Finished() {
 	fmt.Println("Closing DB connection")
 	db.Close()
-}
-
-type Status string
-
-const (
-	Nonce    Status = "nonce"
-	Out      Status = "out"
-	Low      Status = "low"
-	Adequate Status = "adequate"
-	Stocked  Status = "stocked"
-)
-
-type Item struct {
-	Id       int64     `json:"id"`
-	Item     string    `json:"item"`
-	Category string    `json:"category"`
-	Notes    string    `json:"notes"`
-	Status   Status    `json:"status"`
-	Updated  time.Time `json:"updated"`
-}
-
-func GetItems() ([]Item, error) {
-	res, err := db.Query("SELECT * FROM items")
-	if err != nil {
-		return nil, err
-	}
-
-	var items []Item
-
-	for res.Next() {
-		var item Item
-		res.Scan(&item.Id, &item.Item, &item.Category, &item.Notes, &item.Status, &item.Updated)
-		items = append(items, item)
-	}
-
-	return items, nil
-}
-
-type User struct {
-	Id        int64  `json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-}
-
-func GetUsers() ([]User, error) {
-	res, err := db.Query("SELECT * FROM users")
-	if err != nil {
-		return nil, err
-	}
-
-	var users []User
-
-	for res.Next() {
-		var user User
-		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email)
-		users = append(users, user)
-	}
-
-	return users, nil
 }
