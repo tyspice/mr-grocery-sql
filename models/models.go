@@ -12,7 +12,7 @@ var db *sql.DB
 
 func InitDB(userName string, password string, host string, port string) error {
 	fmt.Println("Initializing DB")
-	connectionString := userName + ":" + password + "@tcp(" + host + ":" + port + ")/mr_grocery?timeout=10s"
+	connectionString := userName + ":" + password + "@tcp(" + host + ":" + port + ")/mr_grocery?parseTime=true"
 	var err error
 	db, _ = sql.Open("mysql", connectionString)
 	retryCount := 0

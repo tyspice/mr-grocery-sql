@@ -21,7 +21,7 @@ type Item struct {
 	Category string    `json:"category"`
 	Notes    string    `json:"notes"`
 	Status   Status    `json:"status"`
-	Updated  time.Time `json:"updated time_format:"string"`
+	Updated  time.Time `json:"updated"`
 }
 
 func InsertItem(item *Item) (sql.Result, error) {
