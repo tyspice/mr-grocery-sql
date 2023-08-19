@@ -25,7 +25,17 @@ type Item struct {
 }
 
 func InsertItem(item *Item) (sql.Result, error) {
-	result, err := db.Exec("INSERT INTO items (item, category, notes, status) VALUES (?, ?, ?, ?)", item.Item, item.Category, item.Notes, item.Status)
+	result, err := db.Exec("INSERT INTO items VALUES (NULL, ?, ?, ?, ?, DEFAULT)", item.Item, item.Category, item.Notes, item.Status)
+	return result, err
+}
+
+func UpdateItem(item *Item) (sql.Result, error) {
+	result, err := db.Exec("UPDATE items SET item=?, category=?, notes=?, status=? WHERE id=?", item.Item, item.Category, item.Notes, item.Status, item.Id)
+	return result, err
+}
+
+func DeleteItem(id string) (sql.Result, error) {
+	result, err := db.Exec("DELETE FROM items WHERE id=?", id)
 	return result, err
 }
 

@@ -29,7 +29,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/items", func(c *gin.Context) {
 		items, err := models.GetItems()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, "Woops!")
+			c.JSON(http.StatusInternalServerError, err)
 		} else {
 			c.JSON(http.StatusOK, items)
 		}
@@ -42,14 +42,29 @@ func InitRouter() *gin.Engine {
 			c.JSON(http.StatusInternalServerError, err)
 		}
 
-		_, err := models.InsertItem(&item)
+		var err error
+		if (item.Id == 0) {
+			_, err = models.InsertItem(&item)
+		} else {
+			_, err = models.UpdateItem(&item)
+		}
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 		}
 
-		c.JSON(http.StatusOK, "Item successfully inserted")
+		c.JSON(http.StatusOK, "Success")
 	})
+
+	r.DELETE("/items/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		
+		if _, err := models.DeleteItem(id); err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+		c.JSON(http.StatusOK, "Success")
+	})
+
 
 	return r
 }
