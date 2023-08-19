@@ -5,6 +5,7 @@ type User struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
+	Password  string `json:"password"`
 }
 
 func GetUsers() ([]User, error) {
@@ -22,4 +23,18 @@ func GetUsers() ([]User, error) {
 	}
 
 	return users, nil
+}
+
+func GetUser(email string) (User, error) {
+	var user User
+	res, err := db.Query("SELECT * FROM users WHERE email=?", email)
+	if err != nil {
+		return user, err
+	}
+
+	for res.Next() {
+		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password)
+	}
+
+	return user, nil
 }

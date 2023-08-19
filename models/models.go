@@ -32,13 +32,13 @@ func InitDB(userName string, password string, host string, port string) error {
 }
 
 func InitTables() {
-	_, err := db.Exec("CREATE TABLE IF NOT EXISTS items (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, item TEXT NULL, category VARCHAR(255) NULL, notes VARCHAR(255) NULL, status ENUM('nonce', 'out', 'low', 'adequate', 'stocked') NULL, updated DATETIME DEFAULT(NOW()))")
+	_, err := db.Exec("CREATE TABLE IF NOT EXISTS items (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, item TEXT NULL, category VARCHAR(255) NULL, notes VARCHAR(255) NULL, status ENUM('nonce', 'out', 'low', 'adequate', 'stocked') NULL, updated DATETIME DEFAULT(NOW()), UNIQUE(id))")
 
 	if err != nil {
 		panic(err)
 	}
 
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, first_name VARCHAR(255) NULL, last_name VARCHAR(255) NULL, email VARCHAR(255) NULL)")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, first_name VARCHAR(255) NULL, last_name VARCHAR(255) NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, UNIQUE(id, email))")
 
 	if err != nil {
 		panic(err)
