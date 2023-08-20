@@ -32,15 +32,40 @@ func InitDB(userName string, password string, host string, port string) error {
 }
 
 func InitTables() {
-	_, err := db.Exec("CREATE TABLE IF NOT EXISTS items (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, item TEXT NULL, category VARCHAR(255) NULL, notes VARCHAR(255) NULL, status ENUM('nonce', 'out', 'low', 'adequate', 'stocked') NULL, updated DATETIME DEFAULT(NOW()), UNIQUE(id))")
-
-	if err != nil {
+	if _, err := db.Exec(
+		`CREATE TABLE IF NOT EXISTS items (
+			id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, 
+			item TEXT NULL,
+			category VARCHAR(255) NULL,
+			notes VARCHAR(255) NULL,
+			status ENUM('nonce', 'out', 'low', 'adequate', 'stocked') NULL,
+			updated DATETIME DEFAULT(NOW()),
+			UNIQUE(id)
+		)`); err != nil {
 		panic(err)
 	}
 
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, first_name VARCHAR(255) NULL, last_name VARCHAR(255) NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, UNIQUE(id, email))")
+	if _, err := db.Exec(
+		`CREATE TABLE IF NOT EXISTS user_groups(
+			id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+			name VARCHAR(255) NULL,
+			UNIQUE(id)
+		)`); err != nil {
+		panic(err)
+	}
 
-	if err != nil {
+	if _, err := db.Exec(
+		`CREATE TABLE IF NOT EXISTS users (
+			id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+			first_name VARCHAR(255) NULL,
+			last_name VARCHAR(255) NULL,
+			email VARCHAR(255) NOT NULL,
+			password VARCHAR(255) NULL,
+			role ENUM('admin', 'normy') NOT NULL,
+			user_group_id INT NOT NULL,
+			FOREIGN KEY(user_group_id) REFERENCES user_groups(id),
+			UNIQUE(id, email)
+		)`); err != nil {
 		panic(err)
 	}
 }

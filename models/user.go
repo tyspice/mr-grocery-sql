@@ -1,11 +1,20 @@
 package models
 
+type Role string
+
+const (
+	Admin Role = "admin"
+	Normy Role = "normy"
+)
+
 type User struct {
-	Id        int64  `json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
+	Id          int64  `json:"id"`
+	FirstName   string `json:"firstName"`
+	LastName    string `json:"lastName"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	Role        Role   `json:"role"`
+	UserGroupId string `json:"userGroupId"`
 }
 
 func GetUsers() ([]User, error) {
@@ -18,7 +27,7 @@ func GetUsers() ([]User, error) {
 
 	for res.Next() {
 		var user User
-		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email)
+		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Role, &user.UserGroupId)
 		users = append(users, user)
 	}
 
@@ -33,7 +42,7 @@ func GetUser(email string) (User, error) {
 	}
 
 	for res.Next() {
-		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password)
+		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Role, &user.UserGroupId)
 	}
 
 	return user, nil
