@@ -10,7 +10,7 @@ import (
 
 func main() {
 	err := config.InitConfig()
-	if (err != nil) {
+	if err != nil {
 		panic(err)
 	} else {
 		fmt.Println("Configuration successfully initialized")
