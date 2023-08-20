@@ -22,17 +22,17 @@ func InitRouter() *gin.Engine {
 			return
 		}
 
-		valid, err := auth.VerifyUsernameAndPassword(credentials.Email, credentials.Password)
+		user, err := auth.VerifyUsernameAndPassword(credentials.Email, credentials.Password)
 		if err != nil {
 			c.JSON(http.StatusForbidden, "Forbidden")
 			return
 		}
 
-		if !valid {
-			c.JSON(http.StatusForbidden, "Forbidden")
-		} else {
-			c.JSON(http.StatusOK, valid)
+		jwt, err := auth.GenerateJWT(&user)
+		if (err != nil) {
+			c.JSON(http.StatusInternalServerError, err.Error())
 		}
+		c.JSON(http.StatusOK, jwt)
 	})
 
 	r.Group("/api/v0")

@@ -11,7 +11,8 @@ import (
 type Config struct {
 	Server struct {
 		Port string `yaml:"port" envconfig:"SERVER_PORT"`
-		Secret string `yaml:"secret" envconfig:"SECRET"`
+		Secret string `yaml:"secret" envconfig:"SERVER_SECRET"`
+		TokenLifespan int32 `yaml:"tokenLifespan" envconfig:"SERVER_TOKEN_LIFESPAN"`
 	} `yaml:"server"`
 	Database struct {
 		Username string `yaml:"username" envconfig:"DB_USERNAME"`
