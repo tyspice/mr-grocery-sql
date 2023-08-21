@@ -19,8 +19,9 @@ type Credentials struct {
 
 type UserClaim struct {
 	jwt.RegisteredClaims
-	ID  int64 `json:"id"`
-	Exp int64 `json:"exp"`
+	UserId  int64 `json:"userId"`
+	GroupId int64 `json:"groupId"`
+	Exp     int64 `json:"exp"`
 }
 
 func VerifyUsernameAndPassword(email string, password string) (models.User, error) {
@@ -38,8 +39,9 @@ func VerifyUsernameAndPassword(email string, password string) (models.User, erro
 
 func GenerateJWT(user *models.User) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, UserClaim{
-		ID:  user.Id,
-		Exp: time.Now().Add(time.Hour * time.Duration(24*config.Cfg.Server.TokenLifespan)).Unix(),
+		UserId:  user.Id,
+		GroupId: user.GroupId,
+		Exp:     time.Now().Add(time.Hour * time.Duration(24*config.Cfg.Server.TokenLifespan)).Unix(),
 	})
 	s, err := t.SignedString([]byte(config.Cfg.Server.Secret))
 	return s, err

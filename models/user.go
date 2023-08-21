@@ -20,13 +20,13 @@ const (
 )
 
 type User struct {
-	Id          int64  `json:"id"`
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
-	Email       string `json:"email"`
-	Password    string `json:"password"`
-	Role        Role   `json:"role"`
-	UserGroupId string `json:"userGroupId"`
+	Id        int64  `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	Role      Role   `json:"role"`
+	GroupId   int64  `json:"GroupId"`
 }
 
 func GetUsers() ([]User, error) {
@@ -39,7 +39,7 @@ func GetUsers() ([]User, error) {
 
 	for res.Next() {
 		var user User
-		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Role, &user.UserGroupId)
+		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Role, &user.GroupId)
 		users = append(users, user)
 	}
 
@@ -54,7 +54,7 @@ func GetUser(email string) (User, error) {
 	}
 
 	for res.Next() {
-		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Role, &user.UserGroupId)
+		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Role, &user.GroupId)
 	}
 
 	return user, nil
