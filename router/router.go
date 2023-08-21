@@ -1,6 +1,7 @@
 package router
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -9,6 +10,17 @@ import (
 	"github.com/tyspice/mr-grocery-sql/middlewares"
 	"github.com/tyspice/mr-grocery-sql/models"
 )
+
+func extractUserClaim(c *gin.Context) (auth.UserClaim, error) {
+	var userClaim auth.UserClaim
+	var ok bool
+	result, exists := c.Get("userClaim")
+	userClaim, ok = result.(auth.UserClaim)
+	if exists == false || ok == false {
+		return userClaim, errors.New("user claim not found")
+	}
+	return userClaim, nil
+}
 
 func InitRouter() *gin.Engine {
 	fmt.Println("Starting Server")
@@ -40,7 +52,11 @@ func InitRouter() *gin.Engine {
 	v0.Use(middlewares.JwtAuthMiddleware())
 
 	v0.GET("/items", func(c *gin.Context) {
-		items, err := models.GetItems()
+		userClaim, err := extractUserClaim(c)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+		items, err := models.GetItems(userClaim.GroupId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 		} else {
@@ -51,16 +67,20 @@ func InitRouter() *gin.Engine {
 	v0.POST("/items", func(c *gin.Context) {
 		var item models.Item
 
+		userClaim, err := extractUserClaim(c)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+
 		if err := c.BindJSON(&item); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 
-		var err error
 		if item.Id == 0 {
-			_, err = models.InsertItem(&item)
+			_, err = models.InsertItem(&item, userClaim.GroupId)
 		} else {
-			_, err = models.UpdateItem(&item)
+			_, err = models.UpdateItem(&item, userClaim.GroupId)
 		}
 
 		if err != nil {
@@ -74,7 +94,12 @@ func InitRouter() *gin.Engine {
 	v0.DELETE("/items/:id", func(c *gin.Context) {
 		id := c.Param("id")
 
-		if _, err := models.DeleteItem(id); err != nil {
+		userClaim, err := extractUserClaim(c)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+
+		if _, err := models.DeleteItem(id, userClaim.GroupId); err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}

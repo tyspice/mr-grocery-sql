@@ -25,7 +25,7 @@ type UserClaim struct {
 }
 
 func VerifyUsernameAndPassword(email string, password string) (models.User, error) {
-	user, err := models.GetUser(email)
+	user, err := models.GetUserByEmail(email)
 	if err != nil {
 		return user, err
 	}

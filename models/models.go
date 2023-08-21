@@ -32,11 +32,11 @@ func InitDB(userName string, password string, host string, port string) error {
 }
 
 func InitTables() {
-	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS items (" + ItemModel + ")"); err != nil {
+	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS user_groups(" + UserGroupModel + ")"); err != nil {
 		panic(err)
 	}
 
-	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS user_groups(" + UserGroupModel + ")"); err != nil {
+	if _, err := db.Exec("CREATE TABLE IF NOT EXISTS items (" + ItemModel + ")"); err != nil {
 		panic(err)
 	}
 

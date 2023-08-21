@@ -24,11 +24,11 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Role     Role   `json:"role"`
-	GroupId  int64  `json:"GroupId"`
+	GroupId  int64  `json:"groupId"`
 }
 
-func GetUsers() ([]User, error) {
-	res, err := db.Query("SELECT * FROM users")
+func GetUsersForGroup(groupId int64) ([]User, error) {
+	res, err := db.Query("SELECT id, name, email, role FROM users Where user_group_id=?", groupId)
 	if err != nil {
 		return nil, err
 	}
@@ -44,9 +44,23 @@ func GetUsers() ([]User, error) {
 	return users, nil
 }
 
-func GetUser(email string) (User, error) {
+func GetUserByEmail(email string) (User, error) {
 	var user User
 	res, err := db.Query("SELECT * FROM users WHERE email=?", email)
+	if err != nil {
+		return user, err
+	}
+
+	for res.Next() {
+		res.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.Role, &user.GroupId)
+	}
+
+	return user, nil
+}
+
+func GetUserById(id int64) (User, error) {
+	var user User
+	res, err := db.Query("SELECT * FROM users WHERE id=?", id)
 	if err != nil {
 		return user, err
 	}
