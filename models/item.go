@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+const ItemModel string = `
+	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL, 
+	item TEXT NULL,
+	category VARCHAR(255) NULL,
+	notes VARCHAR(255) NULL,
+	status ENUM('nonce', 'out', 'low', 'adequate', 'stocked') NULL,
+	updated DATETIME DEFAULT(NOW()),
+	UNIQUE(id)
+`
+
 type Status string
 
 const (

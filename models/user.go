@@ -1,5 +1,17 @@
 package models
 
+const UserModel string = `
+	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+	first_name VARCHAR(255) NULL,
+	last_name VARCHAR(255) NULL,
+	email VARCHAR(255) NOT NULL,
+	password VARCHAR(255) NULL,
+	role ENUM('admin', 'normy') NOT NULL,
+	user_group_id INT NOT NULL,
+	FOREIGN KEY(user_group_id) REFERENCES user_groups(id),
+	UNIQUE(id, email)
+`
+
 type Role string
 
 const (
