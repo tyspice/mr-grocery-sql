@@ -2,8 +2,7 @@ package models
 
 const UserModel string = `
 	id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-	first_name VARCHAR(255) NULL,
-	last_name VARCHAR(255) NULL,
+	name VARCHAR(255) NULL,
 	email VARCHAR(255) NOT NULL,
 	password VARCHAR(255) NULL,
 	role ENUM('admin', 'normy') NOT NULL,
@@ -20,13 +19,12 @@ const (
 )
 
 type User struct {
-	Id        int64  `json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-	Role      Role   `json:"role"`
-	GroupId   int64  `json:"GroupId"`
+	Id       int64  `json:"id"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Role     Role   `json:"role"`
+	GroupId  int64  `json:"GroupId"`
 }
 
 func GetUsers() ([]User, error) {
@@ -39,7 +37,7 @@ func GetUsers() ([]User, error) {
 
 	for res.Next() {
 		var user User
-		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Role, &user.GroupId)
+		res.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.Role, &user.GroupId)
 		users = append(users, user)
 	}
 
@@ -54,7 +52,7 @@ func GetUser(email string) (User, error) {
 	}
 
 	for res.Next() {
-		res.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.Role, &user.GroupId)
+		res.Scan(&user.Id, &user.Name, &user.Email, &user.Password, &user.Role, &user.GroupId)
 	}
 
 	return user, nil
