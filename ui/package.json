@@ -10,8 +10,8 @@
     "web": "TAMAGUI_TARGET=web expo start --web"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.7",
-    "@react-navigation/native-stack": "^6.9.13",
     "@tamagui/animations-react-native": "^1.59.2",
     "@tamagui/babel-plugin": "^1.59.2",
     "@tamagui/config": "^1.59.2",
