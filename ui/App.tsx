@@ -4,9 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { navigationRef } from "./RootNavigation";
 
 import { useFonts } from "expo-font";
-import { StatusBar } from "expo-status-bar";
-import { useColorScheme } from "react-native";
-import { Paragraph, TamaguiProvider, Theme, YStack } from "tamagui";
+import { TamaguiProvider, Theme, YStack, Button } from "tamagui";
 
 import config from "./tamagui.config";
 
@@ -14,8 +12,7 @@ const Stack = createNativeStackNavigator();
 
 const Home = () => (
   <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
-    <Paragraph jc="center">Hello</Paragraph>
-    <StatusBar />
+    <Button theme="blue">Hello Tyner</Button>
   </YStack>
 );
 
