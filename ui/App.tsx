@@ -2,6 +2,11 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { navigationRef } from "./RootNavigation";
+import {
+  ShoppingCart,
+  ClipboardCheck,
+  Settings as SettingsIcon,
+} from "@tamagui/lucide-icons";
 
 import { useFonts } from "expo-font";
 import { TamaguiProvider, Theme, YStack, Button, Image } from "tamagui";
@@ -10,9 +15,15 @@ import config from "./tamagui.config";
 
 const Tab = createBottomTabNavigator();
 
-const Home = () => (
+const Store = () => (
   <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
-    <Button theme="blue">Home</Button>
+    <Button theme="blue">Store</Button>
+  </YStack>
+);
+
+const Audit = () => (
+  <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
+    <Button theme="blue">Audit</Button>
   </YStack>
 );
 
@@ -47,8 +58,33 @@ export default function App() {
                 headerTintColor: "#fff",
               }}
             >
-              <Tab.Screen name="Home" component={Home}></Tab.Screen>
-              <Tab.Screen name="Settings" component={Settings}></Tab.Screen>
+              <Tab.Screen
+                name="Store"
+                component={Store}
+                options={{
+                  tabBarIcon: ({ color }) => (
+                    <ShoppingCart color={color}></ShoppingCart>
+                  ),
+                }}
+              ></Tab.Screen>
+              <Tab.Screen
+                name="Audit"
+                component={Audit}
+                options={{
+                  tabBarIcon: ({ color }) => (
+                    <ClipboardCheck color={color}></ClipboardCheck>
+                  ),
+                }}
+              ></Tab.Screen>
+              <Tab.Screen
+                name="Settings"
+                component={Settings}
+                options={{
+                  tabBarIcon: ({ color }) => (
+                    <SettingsIcon color={color}></SettingsIcon>
+                  ),
+                }}
+              ></Tab.Screen>
             </Tab.Navigator>
           </Theme>
         </TamaguiProvider>
