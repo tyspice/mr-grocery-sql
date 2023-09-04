@@ -7,31 +7,12 @@ import {
   ClipboardCheck,
   Settings as SettingsIcon,
 } from "@tamagui/lucide-icons";
-
+import { Shop, Audit, Settings } from "./components";
 import { useFonts } from "expo-font";
 import { TamaguiProvider, Theme, YStack, Button, Image } from "tamagui";
-
 import config from "./tamagui.config";
 
 const Tab = createBottomTabNavigator();
-
-const Store = () => (
-  <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
-    <Button theme="blue">Store</Button>
-  </YStack>
-);
-
-const Audit = () => (
-  <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
-    <Button theme="blue">Audit</Button>
-  </YStack>
-);
-
-const Settings = () => (
-  <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
-    <Button theme="blue">Settings</Button>
-  </YStack>
-);
 
 export default function App() {
   const [loaded] = useFonts({
@@ -59,8 +40,8 @@ export default function App() {
               }}
             >
               <Tab.Screen
-                name="Store"
-                component={Store}
+                name="Shop"
+                component={Shop}
                 options={{
                   tabBarIcon: ({ color }) => (
                     <ShoppingCart color={color}></ShoppingCart>
