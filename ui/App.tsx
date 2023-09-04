@@ -1,38 +1,51 @@
-import { Platform, StyleSheet } from "react-native";
-import { createTheme, ThemeProvider, darkColors } from "@rneui/themed";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Settings from "./Settings";
-import Home from "./Home";
-import Header from "./Header";
 import { navigationRef } from "./RootNavigation";
 
-const theme = createTheme({
-  darkColors: {
-    ...Platform.select({
-      default: darkColors.platform.ios,
-      ios: darkColors.platform.ios,
-    }),
-  },
-});
+import { useFonts } from "expo-font";
+import { StatusBar } from "expo-status-bar";
+import { useColorScheme } from "react-native";
+import { Paragraph, TamaguiProvider, Theme, YStack } from "tamagui";
+
+import config from "./tamagui.config";
 
 const Stack = createNativeStackNavigator();
 
+const Home = () => (
+  <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
+    <Paragraph jc="center">Hello</Paragraph>
+    <StatusBar />
+  </YStack>
+);
+
 export default function App() {
+  const [loaded] = useFonts({
+    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+  });
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <NavigationContainer ref={navigationRef}>
-      <ThemeProvider theme={theme}>
-        <SafeAreaProvider
-          style={{ backgroundColor: theme.darkColors?.background }}
-        >
-          <Header></Header>
-          <Stack.Navigator>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Settings" component={Settings} />
-          </Stack.Navigator>
-        </SafeAreaProvider>
-      </ThemeProvider>
+      <SafeAreaProvider>
+        <TamaguiProvider config={config}>
+          <Theme name="dark">
+            <Stack.Navigator
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: "#000",
+                },
+                headerTintColor: "#fff",
+              }}
+            >
+              <Stack.Screen name="Home" component={Home}></Stack.Screen>
+            </Stack.Navigator>
+          </Theme>
+        </TamaguiProvider>
+      </SafeAreaProvider>
     </NavigationContainer>
   );
 }
