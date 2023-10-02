@@ -4,7 +4,7 @@ import { TamaguiProvider, Theme } from "tamagui";
 import config from "./tamagui.config";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import { Navigation } from "./components";
+import { Navigation, Login } from "./components";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -20,8 +20,8 @@ export default function App() {
       <SafeAreaProvider>
         <TamaguiProvider config={config}>
           <Theme name="dark">
-            {/* <Login /> */}
-            <Navigation />
+            <Login />
+            {/* <Navigation /> */}
           </Theme>
         </TamaguiProvider>
       </SafeAreaProvider>
