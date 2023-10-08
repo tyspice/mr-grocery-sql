@@ -5,6 +5,8 @@ import config from "./tamagui.config";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { Navigation, Login } from "./components";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -20,11 +22,15 @@ export default function App() {
       <SafeAreaProvider>
         <TamaguiProvider config={config}>
           <Theme name="dark">
-            <Login />
-            {/* <Navigation /> */}
+            <Body />
           </Theme>
         </TamaguiProvider>
       </SafeAreaProvider>
     </Provider>
   );
+}
+
+function Body() {
+  const { authenticated } = useSelector((state: RootState) => state.auth);
+  return authenticated ? <Navigation /> : <Login />;
 }

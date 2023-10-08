@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Button, Form, Input, Text, YStack } from "tamagui";
-
-const submit = (username: string, password: string) => {
-  console.log(`username: ${username}, password: ${password}`);
-};
+import { useDispatch } from "react-redux";
+import { authenticate } from "../features/auth";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+
+  const submit = (username: string, password: string) => {
+    dispatch(authenticate(true));
+  };
 
   return (
     <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
