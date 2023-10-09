@@ -31,6 +31,6 @@ export default function App() {
 }
 
 function Body() {
-  const { authenticated } = useSelector((state: RootState) => state.auth);
-  return authenticated ? <Navigation /> : <Login />;
+  const { token } = useSelector((state: RootState) => state.auth);
+  return token ? <Navigation /> : <Login />;
 }

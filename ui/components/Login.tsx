@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Button, Form, Input, Text, YStack } from "tamagui";
 import { useDispatch } from "react-redux";
-import { authenticate } from "../features/auth";
+import { login } from "../features/auth";
+import { AppDispatch } from "../store";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const submit = (username: string, password: string) => {
-    dispatch(authenticate(true));
+    dispatch(login({ username, password }));
   };
 
   return (
