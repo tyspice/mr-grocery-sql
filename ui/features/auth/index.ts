@@ -2,8 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
-// TODO: This isn't currenty working and I believe it's because axios won't
-// TODO: let us send a GET request with a body.
 export const login = createAsyncThunk(
   "auth/getToken",
   async (credentials: { username: string; password: string }, thunkAPI) => {
@@ -13,9 +11,9 @@ export const login = createAsyncThunk(
     }
     token = await axios({
       method: "GET",
-      url: "http://localhost:8080/api/token",
-      data: {
-        email: credentials.username,
+      url: "http://127.0.0.1:8080/api/token",
+      auth: {
+        username: credentials.username,
         password: credentials.password,
       },
     });

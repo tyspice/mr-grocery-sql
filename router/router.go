@@ -29,9 +29,10 @@ func InitRouter() *gin.Engine {
 	r.GET("/token", func(c *gin.Context) {
 
 		var credentials auth.Credentials
-
-		if err := c.BindJSON(&credentials); err != nil {
-			c.JSON(http.StatusInternalServerError, err.Error())
+		var ok bool
+		credentials.Email, credentials.Password, ok = c.Request.BasicAuth()
+		if !ok {
+			c.JSON(http.StatusBadRequest, "Please supply a username and password")
 			return
 		}
 
