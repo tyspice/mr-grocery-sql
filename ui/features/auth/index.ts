@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import base64 from "react-native-base64";
 
 export const login = createAsyncThunk(
   "auth/getToken",
@@ -9,14 +10,17 @@ export const login = createAsyncThunk(
     if (token) {
       return token;
     }
-    token = await axios({
+    const authHeader =
+      "Basic " +
+      base64.encode(`${credentials.username}:${credentials.password}`);
+    const res = await axios({
       method: "GET",
-      url: "http://127.0.0.1:8080/api/token",
-      auth: {
-        username: credentials.username,
-        password: credentials.password,
+      url: "https://mr-grocery.tyspice.dev/token",
+      headers: {
+        Authorization: authHeader,
       },
     });
+    token = res?.data;
     if (token) await SecureStore.setItemAsync("token", token);
     console.log(token);
     return token;
