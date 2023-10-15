@@ -16,10 +16,25 @@ func extractUserClaim(c *gin.Context) (auth.UserClaim, error) {
 	var ok bool
 	result, exists := c.Get("userClaim")
 	userClaim, ok = result.(auth.UserClaim)
-	if exists == false || ok == false {
+	if !exists || !ok {
 		return userClaim, errors.New("user claim not found")
 	}
 	return userClaim, nil
+}
+
+func get(modelMethod models.GetItemType) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		userClaim, err := extractUserClaim(c)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+		items, err := modelMethod(userClaim.GroupId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		} else {
+			c.JSON(http.StatusOK, items)
+		}
+	}
 }
 
 func InitRouter() *gin.Engine {
@@ -52,18 +67,12 @@ func InitRouter() *gin.Engine {
 	v0 := r.Group("/api/v0")
 	v0.Use(middlewares.JwtAuthMiddleware())
 
-	v0.GET("/items", func(c *gin.Context) {
-		userClaim, err := extractUserClaim(c)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
-		}
-		items, err := models.GetItems(userClaim.GroupId)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
-		} else {
-			c.JSON(http.StatusOK, items)
-		}
-	})
+	items := v0.Group("/items")
+
+	items.GET("/all", get(models.GetAllItems))
+	items.GET("/shopping", get(models.GetShoppingItems))
+	items.GET("/audit", get(models.GetAuditItems))
+	items.GET("/oneTime", get(models.GetOneTimeItems))
 
 	v0.POST("/items", func(c *gin.Context) {
 		var item models.Item

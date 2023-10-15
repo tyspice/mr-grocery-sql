@@ -37,6 +37,8 @@ type Item struct {
 	GroupId  int64     `json:"groupId"`
 }
 
+type GetItemType func(int64) ([]Item, error)
+
 func InsertItem(item *Item, groupId int64) (sql.Result, error) {
 	result, err := db.Exec("INSERT INTO items VALUES (NULL, ?, ?, ?, ?, DEFAULT, ?)", item.Item, item.Category, item.Notes, item.Status, groupId)
 	return result, err
@@ -52,8 +54,8 @@ func DeleteItem(id string, groupId int64) (sql.Result, error) {
 	return result, err
 }
 
-func GetItems(groupId int64) ([]Item, error) {
-	res, err := db.Query("SELECT * FROM items WHERE user_group_id=?", groupId)
+func GetItems(groupId int64, query string) ([]Item, error) {
+	res, err := db.Query(query, groupId)
 	if err != nil {
 		return nil, err
 	}
@@ -62,9 +64,25 @@ func GetItems(groupId int64) ([]Item, error) {
 
 	for res.Next() {
 		var item Item
-		res.Scan(&item.Id, &item.Item, &item.Category, &item.Notes, &item.Status, &item.Updated)
+		res.Scan(&item.Id, &item.Item, &item.Category, &item.Notes, &item.Status, &item.Updated, &item.GroupId)
 		items = append(items, item)
 	}
 
 	return items, nil
+}
+
+func GetAllItems(groupId int64) ([]Item, error) {
+	return GetItems(groupId, "SELECT * FROM items WHERE user_group_id=?")
+}
+
+func GetShoppingItems(groupId int64) ([]Item, error) {
+	return GetItems(groupId, "SELECT * FROM items WHERE status IN ('nonce','out','low') AND user_group_id=?")
+}
+
+func GetOneTimeItems(groupId int64) ([]Item, error) {
+	return GetItems(groupId, "SELECT * FROM items WHERE status='nonce' AND user_group_id=?")
+}
+
+func GetAuditItems(groupId int64) ([]Item, error) {
+	return GetItems(groupId, "SELECT * FROM items WHERE NOT status='nonce' AND user_group_id=?")
 }
