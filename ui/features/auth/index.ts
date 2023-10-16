@@ -2,7 +2,17 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import base64 from "react-native-base64";
-import { login as loginEndpoint } from "../endpoints";
+import { login as loginEndpoint } from "../../models";
+import jwtDecode from "jwt-decode";
+
+interface State {
+  token: string;
+  claims: {
+    userId: number | null;
+    groupId: number | null;
+    exp: string | null;
+  };
+}
 
 export const login = createAsyncThunk(
   "auth/getToken",
@@ -35,8 +45,13 @@ export const logout = createAsyncThunk("auth/logout", async () => {
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
+  initialState: <State>{
     token: "",
+    claims: {
+      userId: null,
+      groupId: null,
+      exp: null,
+    },
   },
   reducers: {
     authenticate(state, action: PayloadAction<string>) {
@@ -45,7 +60,17 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
-      state.token = <string>action.payload;
+      if (action.payload) {
+        state.token = <string>action.payload;
+        const decoded = <{ userId: number; groupId: number; exp: number }>(
+          jwtDecode(action.payload)
+        );
+        state.claims = {
+          userId: decoded.userId,
+          groupId: decoded.groupId,
+          exp: new Date(decoded.exp * 1000).toISOString(),
+        };
+      }
     });
     builder.addCase(login.rejected, (state, action) => {
       state.token = "";
