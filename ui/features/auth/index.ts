@@ -53,11 +53,7 @@ const authSlice = createSlice({
       exp: null,
     },
   },
-  reducers: {
-    authenticate(state, action: PayloadAction<string>) {
-      state.token = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state, action) => {
       if (action.payload) {
@@ -85,5 +81,4 @@ const authSlice = createSlice({
   },
 });
 
-export const { authenticate } = authSlice.actions;
 export default authSlice.reducer;

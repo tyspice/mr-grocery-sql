@@ -1,19 +1,28 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Item } from "../../models";
+import getDataService from "../../services/DataService";
+const dataService = getDataService();
 
-const messageSlice = createSlice({
+export const getShoppingItems = createAsyncThunk("/shopping", () => {
+  return dataService.getShoppingItems();
+});
+
+const itemsSlice = createSlice({
   name: "items",
   initialState: {
-    items: <Array<string>>["carrots", "snails", "smut", "snake"],
+    shoppingItems: <Item[]>[],
   },
-  reducers: {
-    pushItem(state, action: PayloadAction<string>) {
-      state.items = state.items.concat(action.payload);
-    },
-    popItem(state) {
-      state.items = state.items.slice(0, -1);
-    },
+  reducers: {},
+  extraReducers(builder) {
+    builder.addCase(getShoppingItems.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.shoppingItems = action.payload.data;
+      }
+    });
+    builder.addCase(getShoppingItems.rejected, (state, action) => {
+      console.log(action);
+    });
   },
 });
 
-export const { pushItem, popItem } = messageSlice.actions;
-export default messageSlice.reducer;
+export default itemsSlice.reducer;
