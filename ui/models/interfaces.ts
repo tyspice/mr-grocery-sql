@@ -1,9 +1,10 @@
 export interface Item {
-  id: number;
+  id?: number;
   item: string;
   category: string;
   notes: string;
   status: string;
-  updated: string;
-  groupId: number;
+  inCart: boolean;
+  updated?: string;
+  groupId?: number;
 }

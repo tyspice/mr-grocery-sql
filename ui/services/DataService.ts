@@ -32,8 +32,26 @@ class DataService {
     });
   }
 
+  private async _post(url: string, data: Item) {
+    return this._authenticatedRequest({
+      method: "POST",
+      baseURL,
+      url,
+      data,
+    });
+  }
+
   public async getShoppingItems(): Promise<AxiosResponse<Item[]> | undefined> {
     return this._get("/items/shopping");
+  }
+
+  public async addItem(data: Item) {
+    data = _.pick(data, ["item", "category", "inCart", "notes", "status"]);
+    return this._post("/items", data);
+  }
+
+  public async updateItem(data: Item) {
+    return this._post("/items", data);
   }
 }
 
