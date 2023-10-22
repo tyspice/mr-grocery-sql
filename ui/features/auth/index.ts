@@ -33,7 +33,6 @@ export const login = createAsyncThunk(
     });
     token = res?.data;
     if (token) await SecureStore.setItemAsync("token", token);
-    console.log(token);
     return token;
   }
 );

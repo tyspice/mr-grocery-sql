@@ -1,10 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Item } from "../../models";
 import getDataService from "../../services/DataService";
 const dataService = getDataService();
 
-export const getShoppingItems = createAsyncThunk("/shopping", () => {
-  return dataService.getShoppingItems();
+export const getShoppingItems = createAsyncThunk("/shopping", async () => {
+  const res = await dataService.getShoppingItems();
+  if (res) {
+    return res.data;
+  }
 });
 
 const itemsSlice = createSlice({
@@ -16,7 +19,7 @@ const itemsSlice = createSlice({
   extraReducers(builder) {
     builder.addCase(getShoppingItems.fulfilled, (state, action) => {
       if (action.payload) {
-        state.shoppingItems = action.payload.data;
+        state.shoppingItems = action.payload;
       }
     });
     builder.addCase(getShoppingItems.rejected, (state, action) => {
