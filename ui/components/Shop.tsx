@@ -1,4 +1,4 @@
-import { YStack, ListItem, YGroup, Button } from "tamagui";
+import { YStack, ListItem, YGroup } from "tamagui";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { useEffect } from "react";
@@ -26,7 +26,6 @@ export const Shop = () => {
           </YGroup.Item>
         ))}
       </YGroup>
-      {/* <Button onPress={() => dispatch(getShoppingItems())}>get</Button> */}
     </YStack>
   );
 };
