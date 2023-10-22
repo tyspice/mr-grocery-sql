@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { useEffect } from "react";
 import { getShoppingItems } from "../features/items";
+import { Check } from "@tamagui/lucide-icons";
 
 export const Shop = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,10 +19,13 @@ export const Shop = () => {
           <YGroup.Item key={i}>
             <ListItem
               theme={i % 2 === 0 ? "blue" : "blue_alt1"}
-              size="$8"
+              size="$5"
               key={i}
+              title={e.item}
+              subTitle={e.category}
+              iconAfter={<Check size="$2" />}
             >
-              {e.item}
+              {e.notes}
             </ListItem>
           </YGroup.Item>
         ))}
