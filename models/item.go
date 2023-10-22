@@ -47,7 +47,7 @@ func InsertItem(item *Item, groupId int64) (sql.Result, error) {
 }
 
 func UpdateItem(item *Item, groupId int64) (sql.Result, error) {
-	result, err := db.Exec("UPDATE items SET item=?, category=?, notes=?, status=?, inCart=? WHERE id=?, user_group_id=?", item.Item, item.Category, item.Notes, item.Status, item.InCart, item.Id, groupId)
+	result, err := db.Exec("UPDATE items SET item=?, category=?, notes=?, status=?, inCart=? WHERE id=? AND user_group_id=?", item.Item, item.Category, item.Notes, item.Status, item.InCart, item.Id, groupId)
 	return result, err
 }
 
