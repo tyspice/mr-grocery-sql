@@ -11,6 +11,7 @@ const ItemModel string = `
 	category VARCHAR(255) NULL,
 	notes VARCHAR(255) NULL,
 	status ENUM('nonce', 'out', 'low', 'adequate', 'stocked') NULL,
+	inCart BOOL FALSE,
 	updated DATETIME DEFAULT(NOW()),
 	user_group_id INT NOT NULL,
 	FOREIGN KEY(user_group_id) REFERENCES user_groups(id),
@@ -33,6 +34,7 @@ type Item struct {
 	Category string    `json:"category"`
 	Notes    string    `json:"notes"`
 	Status   Status    `json:"status"`
+	InCart   bool      `json:"inCart"`
 	Updated  time.Time `json:"updated"`
 	GroupId  int64     `json:"groupId"`
 }
@@ -40,12 +42,12 @@ type Item struct {
 type GetItemType func(int64) ([]Item, error)
 
 func InsertItem(item *Item, groupId int64) (sql.Result, error) {
-	result, err := db.Exec("INSERT INTO items VALUES (NULL, ?, ?, ?, ?, DEFAULT, ?)", item.Item, item.Category, item.Notes, item.Status, groupId)
+	result, err := db.Exec("INSERT INTO items VALUES (NULL, ?, ?, ?, ?, ?, DEFAULT, ?)", item.Item, item.Category, item.Notes, item.Status, item.InCart, groupId)
 	return result, err
 }
 
 func UpdateItem(item *Item, groupId int64) (sql.Result, error) {
-	result, err := db.Exec("UPDATE items SET item=?, category=?, notes=?, status=? WHERE id=?, user_group_id=?", item.Item, item.Category, item.Notes, item.Status, item.Id, groupId)
+	result, err := db.Exec("UPDATE items SET item=?, category=?, notes=?, status=?, inCart=? WHERE id=?, user_group_id=?", item.Item, item.Category, item.Notes, item.Status, item.InCart, item.Id, groupId)
 	return result, err
 }
 
@@ -64,7 +66,7 @@ func GetItems(groupId int64, query string) ([]Item, error) {
 
 	for res.Next() {
 		var item Item
-		res.Scan(&item.Id, &item.Item, &item.Category, &item.Notes, &item.Status, &item.Updated, &item.GroupId)
+		res.Scan(&item.Id, &item.Item, &item.Category, &item.Notes, &item.Status, &item.InCart, &item.Updated, &item.GroupId)
 		items = append(items, item)
 	}
 
