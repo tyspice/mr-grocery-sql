@@ -11,7 +11,7 @@ const ItemModel string = `
 	category VARCHAR(255) NULL,
 	notes VARCHAR(255) NULL,
 	status ENUM('nonce', 'out', 'low', 'adequate', 'stocked') NULL,
-	inCart BOOL FALSE,
+	inCart BOOL Null,
 	updated DATETIME DEFAULT(NOW()),
 	user_group_id INT NOT NULL,
 	FOREIGN KEY(user_group_id) REFERENCES user_groups(id),
