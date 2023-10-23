@@ -3,6 +3,7 @@ import { Button, Form, Input, Text, YStack } from "tamagui";
 import { useDispatch } from "react-redux";
 import { login } from "../features/auth";
 import { AppDispatch } from "../store";
+import { LogIn } from "@tamagui/lucide-icons";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
@@ -35,11 +36,16 @@ export const Login = () => {
           value={password}
           onChangeText={setPassword}
         />
-        <Form.Trigger asChild>
-          <Button theme="blue" margin="$3">
-            Login
-          </Button>
-        </Form.Trigger>
+        <Button
+          theme="blue"
+          margin="$3"
+          icon={LogIn}
+          size={"$5"}
+          textAlign="auto"
+          onPress={() => submit(username, password)}
+        >
+          Login
+        </Button>
       </Form>
     </YStack>
   );
