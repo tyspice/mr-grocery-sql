@@ -1,7 +1,7 @@
-import { YStack, Button } from "tamagui";
+import { YStack, Text } from "tamagui";
 
 export const Audit = () => (
   <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
-    <Button theme="blue">Audit</Button>
+    <Text>Coming Soon</Text>
   </YStack>
 );

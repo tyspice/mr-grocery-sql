@@ -20,6 +20,13 @@ export const updateItem = createAsyncThunk(
   }
 );
 
+export const addItem = createAsyncThunk("/addItem", async (item: Item) => {
+  const res = await dataService.addItem(item);
+  if (res) {
+    return true;
+  }
+});
+
 const itemsSlice = createSlice({
   name: "items",
   initialState: {
@@ -41,6 +48,14 @@ const itemsSlice = createSlice({
       }
     });
     builder.addCase(updateItem.rejected, (state, action) => {
+      console.log(action);
+    });
+    builder.addCase(addItem.fulfilled, (state, action) => {
+      if (action.payload) {
+        // something
+      }
+    });
+    builder.addCase(addItem.rejected, (state, action) => {
       console.log(action);
     });
   },

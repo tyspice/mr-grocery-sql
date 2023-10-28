@@ -100,7 +100,7 @@ export const Shop = () => {
             icon={ChevronDown}
             onPress={() => setOpen(false)}
           />
-          <NewItem></NewItem>
+          <NewItem setOpen={setOpen}></NewItem>
         </Sheet.Frame>
       </Sheet>
     </YStack>
