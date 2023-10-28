@@ -3,3 +3,4 @@ export * from "./Shop";
 export * from "./Settings";
 export * from "./Login";
 export * from "./Navigation";
+export * from "./NewItem";

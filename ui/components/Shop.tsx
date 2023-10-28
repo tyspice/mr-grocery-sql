@@ -15,6 +15,7 @@ import { getShoppingItems, updateItem } from "../features/items";
 import { Check, ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
 import { Item } from "../models";
 import _ from "lodash-es";
+import { NewItem } from "./NewItem";
 
 export const Shop = () => {
   const [open, setOpen] = useState(false);
@@ -71,6 +72,7 @@ export const Shop = () => {
       <Sheet
         forceRemoveScrollEnabled={open}
         modal={false}
+        moveOnKeyboardChange={true}
         open={open}
         onOpenChange={setOpen}
         dismissOnSnapToBottom
@@ -98,7 +100,7 @@ export const Shop = () => {
             icon={ChevronDown}
             onPress={() => setOpen(false)}
           />
-          <Input width={200} />
+          <NewItem></NewItem>
         </Sheet.Frame>
       </Sheet>
     </YStack>
