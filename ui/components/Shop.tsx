@@ -33,8 +33,13 @@ export const Shop = () => {
     await dispatch(getShoppingItems());
   };
 
+  const handleClearCheckedItems = async () => {};
+
   return (
     <YStack backgroundColor={"$background"} fullscreen={true}>
+      <Button onPress={handleClearCheckedItems} chromeless>
+        Clear Checked Items
+      </Button>
       <ScrollView backgroundColor={"$background"}>
         <YGroup space>
           {shoppingItems.map((e, i) => (
