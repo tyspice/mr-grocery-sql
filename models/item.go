@@ -52,7 +52,12 @@ func UpdateItem(item *Item, groupId int64) (sql.Result, error) {
 }
 
 func DeleteItem(id string, groupId int64) (sql.Result, error) {
-	result, err := db.Exec("DELETE FROM items WHERE id=?, user_group_id=?", id, groupId)
+	result, err := db.Exec("DELETE FROM items WHERE id=? AND user_group_id=?", id, groupId)
+	return result, err
+}
+
+func HandleCheckedItems(groupId int64) (sql.Result, error) {
+	result, err := db.Exec("DELETE FROM items WHERE inCart=TRUE AND status='nonce' AND user_group_id=?", groupId)
 	return result, err
 }
 

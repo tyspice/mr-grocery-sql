@@ -101,6 +101,20 @@ func InitRouter() *gin.Engine {
 		c.JSON(http.StatusOK, "Success")
 	})
 
+	v0.POST("/handleCheckedItems", func(c *gin.Context) {
+		userClaim, err := extractUserClaim(c)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+
+		_, err = models.HandleCheckedItems(userClaim.GroupId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+		}
+
+		c.JSON(http.StatusOK, "Success")
+	})
+
 	v0.DELETE("/items/:id", func(c *gin.Context) {
 		id := c.Param("id")
 
