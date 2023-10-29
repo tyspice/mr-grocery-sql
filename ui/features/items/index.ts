@@ -10,22 +10,29 @@ export const getShoppingItems = createAsyncThunk("/getShopping", async () => {
   }
 });
 
-export const updateItem = createAsyncThunk(
-  "/updateItem",
-  async (item: Item) => {
-    const res = await dataService.updateItem(item);
-    if (res) {
-      return true;
-    }
+export const updateItem = createAsyncThunk("/update", async (item: Item) => {
+  const res = await dataService.updateItem(item);
+  if (res) {
+    return true;
   }
-);
+});
 
-export const addItem = createAsyncThunk("/addItem", async (item: Item) => {
+export const addItem = createAsyncThunk("/add", async (item: Item) => {
   const res = await dataService.addItem(item);
   if (res) {
     return true;
   }
 });
+
+export const handleCheckedItems = createAsyncThunk(
+  "/handleChecked",
+  async () => {
+    const res = await dataService.handleCheckedItem();
+    if (res) {
+      return true;
+    }
+  }
+);
 
 const itemsSlice = createSlice({
   name: "items",
@@ -56,6 +63,14 @@ const itemsSlice = createSlice({
       }
     });
     builder.addCase(addItem.rejected, (state, action) => {
+      console.log(action);
+    });
+    builder.addCase(handleCheckedItems.fulfilled, (state, action) => {
+      if (action.payload) {
+        // something
+      }
+    });
+    builder.addCase(handleCheckedItems.rejected, (state, action) => {
       console.log(action);
     });
   },

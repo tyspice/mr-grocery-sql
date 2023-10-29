@@ -6,12 +6,15 @@ import {
   Checkbox,
   Button,
   Sheet,
-  Input,
 } from "tamagui";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { useEffect, useState } from "react";
-import { getShoppingItems, updateItem } from "../features/items";
+import {
+  getShoppingItems,
+  handleCheckedItems,
+  updateItem,
+} from "../features/items";
 import { Check, ChevronDown, ChevronUp } from "@tamagui/lucide-icons";
 import { Item } from "../models";
 import _ from "lodash-es";
@@ -33,12 +36,15 @@ export const Shop = () => {
     await dispatch(getShoppingItems());
   };
 
-  const handleClearCheckedItems = async () => {};
+  const handleClearCheckedItems = async () => {
+    await dispatch(handleCheckedItems());
+    await dispatch(getShoppingItems());
+  };
 
   return (
     <YStack backgroundColor={"$background"} fullscreen={true}>
       <Button onPress={handleClearCheckedItems} chromeless>
-        Clear Checked Items
+        Done Shopping
       </Button>
       <ScrollView backgroundColor={"$background"}>
         <YGroup space>
@@ -99,12 +105,6 @@ export const Shop = () => {
           theme={"blue"}
           space="$5"
         >
-          <Button
-            size="$6"
-            circular
-            icon={ChevronDown}
-            onPress={() => setOpen(false)}
-          />
           <NewItem setOpen={setOpen}></NewItem>
         </Sheet.Frame>
       </Sheet>

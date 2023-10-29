@@ -32,12 +32,12 @@ class DataService {
     });
   }
 
-  private async _post(url: string, data: Item) {
+  private async _post(url: string, data?: Item) {
     return this._authenticatedRequest({
       method: "POST",
       baseURL,
       url,
-      data,
+      data: data || {},
     });
   }
 
@@ -52,6 +52,10 @@ class DataService {
 
   public async updateItem(data: Item) {
     return this._post("/items", data);
+  }
+
+  public async handleCheckedItem() {
+    return this._post("/handleCheckedItems");
   }
 }
 
